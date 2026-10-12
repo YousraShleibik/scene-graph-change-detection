@@ -52,7 +52,7 @@ def save_to_text_file(data, file_path):
 def get_comparison_key(node):
     # Extracts the 'id', 'position', and 'name' from the node's 'attributes', converting 'position' to a tuple
     return (
-        node.get('attributes', {}).get('id'),
+        node.get('id'),
         tuple(node.get('attributes', {}).get('position', [])),  # Convert 'position' to a tuple
         node.get('attributes', {}).get('name')
     )
@@ -106,4 +106,5 @@ text_file1 = 'nodes_file1_b_r1.txt'
 text_file2 = 'nodes_file2_b_r2.txt'
 added_nodes_file = 'added_nodes_b.txt'
 
-process_files(file1_path, file2_path, output_file_path, text_file1, text_file2, added_nodes_file)
+if __name__ == '__main__':
+    process_files(file1_path, file2_path, output_file_path, text_file1, text_file2, added_nodes_file)

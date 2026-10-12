@@ -1,57 +1,14 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 11 11:36:56 2023
+"""Legacy additions-only comparison; modified IDs are reported by the full CLI."""
+from change_detection import detect_changes as _detect_changes
+from change_detection import main as _main, read_json, save_json, _highlight
 
-@author: yasoo
-"""
-
-import json
-
-def read_json(file_path):
-    with open(file_path, 'r') as f:
-        return json.load(f)
-
-def save_json(data, file_path):
-    with open(file_path, 'w') as f:
-        json.dump(data, f)
 
 def detect_changes(graph1, graph2):
-    changes = {}
+    report = _detect_changes(graph1, graph2)
+    return {kind: [_highlight(node, [128, 128, 128])
+                   for node in report[f'added_{kind}']]
+            for kind in ('nodes', 'edges')}
 
-    # Serialize each node and edge to a string to make them hashable
-    nodes1_set = set(json.dumps(node, sort_keys=True) for node in graph1['nodes'])
-    nodes2_set = set(json.dumps(node, sort_keys=True) for node in graph2['nodes'])
-
-    added_nodes = nodes2_set - nodes1_set
-    
-    #deleted_nodes = nodes1_set - nodes2_set
-
-    if added_nodes:
-        changes['nodes'] = [dict(json.loads(node_str), color=[128, 128, 128]) for node_str in added_nodes]  # Grey
-    #if deleted_nodes:
-        #changes['nodes'] = [dict(json.loads(node_str), color=[255, 255, 0]) for node_str in deleted_nodes]  # Yellow
-
-    edges1_set = set(json.dumps(edge, sort_keys=True) for edge in graph1['edges'])
-    edges2_set = set(json.dumps(edge, sort_keys=True) for edge in graph2['edges'])
-
-    added_edges = edges2_set - edges1_set
-    #deleted_edges = edges1_set - edges2_set
-
-    if added_edges:
-        changes['edges'] = [dict(json.loads(edge_str), color=[128, 128, 128]) for edge_str in added_edges]  # Grey
-    #if deleted_edges:
-        #changes['edges'] = [dict(json.loads(edge_str), color=[255, 255, 0]) for edge_str in deleted_edges]  # Yellow
-
-    return changes
-
-def main():
-    graph1 = read_json('dsg_back_run1.json') #old graph 
-    graph2 = read_json('dsg_front_run1.json') #new graph 
-    
-    changes = detect_changes(graph1, graph2)
-    #print("output of change",changes )
-    
-    save_json(changes, 'changes_add_rn12_bb.json')
 
 if __name__ == '__main__':
-    main()
+    _main(additions_only=True)

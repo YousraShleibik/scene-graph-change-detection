@@ -38,4 +38,5 @@ input_file2 = 'dsg_obj_backend_run1.json'  # Replace with actual file path
 output_file = 'object_backend_run2_1.json'  # Replace with actual file path
 
 # Run the function with the specified file paths
-modify_and_save_graph(input_file1, input_file2, output_file)
+if __name__ == '__main__':
+    modify_and_save_graph(input_file1, input_file2, output_file)

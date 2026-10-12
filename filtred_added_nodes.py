@@ -55,4 +55,5 @@ text_file1 = 'nodes_file1.txt'
 text_file2 = 'nodes_file2.txt'
 added_nodes_file = 'added_nodes_filtered.txt'
 
-process_files(file1_path, file2_path, output_file_path, text_file1, text_file2, added_nodes_file)
+if __name__ == '__main__':
+    process_files(file1_path, file2_path, output_file_path, text_file1, text_file2, added_nodes_file)
