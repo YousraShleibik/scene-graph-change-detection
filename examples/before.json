@@ -1,0 +1,7 @@
+{
+  "nodes": [
+    {"id": 1, "attributes": {"name": "chair", "position": [0, 0, 0]}},
+    {"id": 2, "attributes": {"name": "table", "position": [1, 0, 0]}}
+  ],
+  "edges": [{"source": 1, "target": 2}]
+}

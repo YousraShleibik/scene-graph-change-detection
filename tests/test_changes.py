@@ -1,5 +1,4 @@
 from copy import deepcopy
-import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
@@ -60,18 +59,17 @@ class ChangeTests(unittest.TestCase):
             self.assertIn('added_nodes', report)
             from change_detection import ROOT
             with self.assertRaises(SystemExit):
-                main(['--output', str(ROOT / 'dsg_backend_run1.json')])
+                main(['--output', str(ROOT / 'examples' / 'before.json')])
 
-    def test_legacy_imports_do_not_write_files(self):
-        from unittest.mock import patch
-        root = Path(__file__).resolve().parents[1]
-        for path in root.glob('*.py'):
-            if path.name == 'change_detection.py':
-                continue
-            spec = importlib.util.spec_from_file_location('legacy_demo', path)
-            module = importlib.util.module_from_spec(spec)
-            with patch('builtins.open', side_effect=AssertionError('Unexpected file access on import')):
-                spec.loader.exec_module(module)
+    def test_included_example_has_all_change_types(self):
+        from change_detection import ROOT, read_json
+        report = detect_changes(read_json(ROOT / 'examples' / 'before.json'),
+                                read_json(ROOT / 'examples' / 'after.json'))
+        self.assertEqual([node['id'] for node in report['added_nodes']], [3])
+        self.assertEqual([node['id'] for node in report['deleted_nodes']], [1])
+        self.assertEqual(report['modified_nodes'][0]['after']['id'], 2)
+        self.assertEqual(len(report['added_edges']), 1)
+        self.assertEqual(len(report['deleted_edges']), 1)
 
 
 if __name__ == '__main__':

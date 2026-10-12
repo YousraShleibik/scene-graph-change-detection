@@ -164,3 +164,13 @@ cython_debug/
 .DS_Store
 changes.json
 additions.json
+
+# Generated scene graph reports and exports
+outputs/
+changes_*.json
+modified_*.json
+path_to_output_file*.json
+object_backend_run*.json
+added_nodes*.txt
+nodes_file*.txt
+node_ids_and_labels.json

@@ -85,8 +85,8 @@ def detect_changes(graph1, graph2):
 
 def main(argv=None, *, additions_only=False):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('old', nargs='?', type=Path, default=ROOT / 'dsg_backend_run1.json')
-    parser.add_argument('new', nargs='?', type=Path, default=ROOT / 'dsg_backend_run2.json')
+    parser.add_argument('old', nargs='?', type=Path, default=ROOT / 'examples' / 'before.json')
+    parser.add_argument('new', nargs='?', type=Path, default=ROOT / 'examples' / 'after.json')
     parser.add_argument('--output', type=Path, default=Path('changes.json'))
     args = parser.parse_args(argv)
     if args.output.resolve() in (args.old.resolve(), args.new.resolve()):

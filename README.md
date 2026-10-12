@@ -1,51 +1,68 @@
 # Scene Graph Change Detection
 
-Compare two JSON scene graphs to identify added, deleted, and modified nodes
-and edges. This project includes recorded dynamic scene graphs and scripts for
-highlighting changes in object position, labels, and bounding boxes.
+A Python tool for detecting added, deleted, and modified nodes and edges between
+two scene graphs. It uses stable IDs to distinguish newly observed objects from
+attribute changes, and exports deterministic JSON reports with before/after
+records and display colors.
 
-## Run
+## Quick start
 
-Python 3.10 or newer; the comparison tools use only the standard library.
+Python 3.10 or newer. No third-party dependencies are required.
 
 ```sh
-python change_detection.py dsg_backend_run1.json dsg_backend_run2.json --output changes.json
-python comapre_sg_add_delete.py --output changes.json
-python compare_sg_add.py --output additions.json
+python3 change_detection.py --output changes.json
 ```
 
-The two graph paths are optional and default to the included backend run files,
-resolved relative to the script. Explicit paths and output paths are relative
-to your working directory. Output cannot overwrite either input graph.
+The included small example reports a removed chair, a moved table, an added lamp,
+and changed edges. To compare the recorded scene graphs:
+
+```sh
+python3 change_detection.py dsg_backend_run1.json dsg_backend_run2.json --output changes.json
+```
+
+## Files
+
+| Path | Purpose |
+| --- | --- |
+| `change_detection.py` | Comparison functions and command-line interface |
+| `examples/before.json`, `examples/after.json` | Small runnable examples |
+| `tests/test_changes.py` | Regression tests |
+| `dsg_backend_run*.json` | Recorded backend input scene graphs |
+| `dsg_frontend_run*.json` | Recorded frontend input scene graphs |
+| `dsg_obj_backend_run*.json` | Recorded object-layer input scene graphs |
+| `LICENSE` | Original project license |
+
+Generated reports and node-list exports are excluded from version control.
+Historical outputs and duplicate experimental scripts were removed. The six
+recorded input graphs are preserved. `Old-dsg.json` and `new-dsg.json` were exact
+copies of the two frontend input files and were removed as duplicates.
 
 ## Report format
 
 - `added_nodes`, `deleted_nodes`, `added_edges`, `deleted_edges`: original records.
 - `modified_nodes`, `modified_edges`: records with `before` and `after` values.
-- `nodes`, `edges`: combined highlighted changes for legacy consumers; additions
-  are gray, deletions yellow, modifications green. When a record has an
-  `attributes` object, the highlight color is stored there.
+- `nodes`, `edges`: combined highlighted changes; additions are gray, deletions
+  yellow, modifications green. Highlight colors use `attributes.color` when an
+  attributes object exists, otherwise top-level `color`.
 
 Nodes are matched by top-level `id`; edges by ordered `source`, `target`, and
-optional `key` (or `id`). Changes to a matched record are modifications rather
-than false additions/deletions. Color-only changes are ignored. Comparisons of
-other attributes are exact, including positions and bounding boxes. Missing
-edges default to an empty list. Duplicate identities are rejected instead of
-silently discarding records. Undirected edge endpoints must be consistently
-ordered in both files; parallel edges need unique keys or IDs.
+optional `key` (or `id`). Changes to matched records are modifications. Color-only
+changes are ignored. Other comparisons are exact, including positions and
+bounding boxes. Duplicate identities are rejected. Missing edges default to an
+empty list. Undirected endpoints must be ordered consistently; parallel edges
+need unique keys or IDs. This tool compares graph records; it does not infer
+object correspondence when object IDs change between runs.
 
-`compare_sg_add.py` reports strictly new identities; use the full comparison
-for attribute changes. Its legacy importable helpers remain available.
-
-The `filter_*`, `filtred_*`, `bb_filtred_add.py`, and `test_added_nodes*.py`
-files are historical filtering demos, with their original comparison criteria
-and default paths. Run those from the repository directory. They now avoid
-writing files during import. Use `change_detection.py` for a complete report.
-Some historical output JSON/text files predate these fixes; generate a fresh
-report instead of assuming they reflect the current implementation.
+Input graphs are not modified. The output path cannot overwrite either input.
+Default example paths are resolved relative to the script; explicit paths and
+the output path are relative to your working directory.
 
 ## Tests
 
 ```sh
-python -m unittest discover -s tests -v
+python3 -m unittest discover -s tests -v
 ```
+
+## GitHub description
+
+Python scene graph comparison for detecting added, deleted, and modified objects and relationships, with JSON reports and tests.
